@@ -1,0 +1,27 @@
+/*Reset - removes default browser styles*/ 
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+/*CSS Variables - colour theme*/
+:root {
+    --green: #1a6b3c;
+    --green-light: #2d9e5f;
+    --green-xlight: #e8f5ee;
+    --black: #0d0d0d;
+    --white: #ffffff;
+    --gray: #6b7280;
+    --gray-light: #e5e7eb;
+    --red: #dc2626;
+}
+
+/*Base body styles*/
+body {
+    font-family: 'Segoe UI', sans-serif;
+    background: #f7f9f7;
+    color: var(--black);
+    min-height: 100vh;
+    font-size: 15px;
+}
