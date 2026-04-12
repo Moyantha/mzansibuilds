@@ -781,3 +781,35 @@ body {
   background: #d1fae5;
   color: #065f46;
 }
+
+/* Hands Notification */
+.hands-notification {
+  background: #fef3c7;
+  border: 1px solid #fcd34d;
+  border-radius: 8px;
+  padding: 8px 12px;
+  margin-bottom: 1rem;
+}
+
+.hands-label {
+  font-size: 11px;
+  color: #92400e;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  margin-bottom: 6px;
+}
+
+.hands-list {
+  display: flex;
+  gap: 6px;
+  flex-wrap: wrap;
+}
+
+.hand-badge {
+  background: #fcd34d;
+  color: #78350f;
+  font-size: 12px;
+  padding: 3px 8px;
+  border-radius: 20px;
+  font-weight: 500;
+}

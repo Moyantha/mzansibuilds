@@ -20,14 +20,14 @@ function saveSession() {
 
 //Generate a unique ID for new users and projects
 function generateId() {
-  return 'id_' + Math.random().toString(36).slice;
+  return 'id_' + Math.random().toString(36).slice(2);
 }
 
 //AUTHENTICATION- Register, Login, Logout
-function login(){
+function login() {
   const email = document.getElementById('loginEmail').value.trim();
   const password = document.getElementById('loginPassword').value.trim();
-  const errorMsg =  document.getElementById('loginError');
+  const errorMsg = document.getElementById('loginError');
 
   // Validation
   if (!email || !password) {
@@ -43,7 +43,11 @@ function login(){
     return;
   }
 
-  // Log in
+  // Clear any previous session first
+  currentUser = null;
+  localStorage.removeItem('mb_session');
+
+  // Set new session
   currentUser = user;
   saveSession();
   showApp();
@@ -52,6 +56,22 @@ function login(){
 function logout() {
   currentUser = null;
   localStorage.removeItem('mb_session');
+  
+  // Clear the login form
+  document.getElementById('loginEmail').value = '';
+  document.getElementById('loginPassword').value = '';
+  document.getElementById('loginError').textContent = '';
+
+  // Clear the register form too
+  document.getElementById('regName').value = '';
+  document.getElementById('regEmail').value = '';
+  document.getElementById('regPassword').value = '';
+  document.getElementById('regBio').value = '';
+  document.getElementById('regSkills').value = '';
+  document.getElementById('registerError').textContent = '';
+
+  // Always go back to login form, not register
+  showLogin();
   showAuth();
 }
 
@@ -283,19 +303,30 @@ function renderFeed() {
             </div>
           ` : ''}
 
+          ${project.hands.length > 0 && isMine ? `
+            <div class="hands-notification">
+              <p class="hands-label">👋 Collaboration requests</p>
+              <div class="hands-list">
+                ${project.hands.map(handId => {
+                  const handUser = users.find(u => u.id === handId) || { name: 'Unknown' };
+                  return `<span class="hand-badge">${handUser.name}</span>`;
+                }).join('')}
+              </div>
+            </div>
+          ` : ''}
+
           <div class="card-actions">
             <button class="icon-btn" onclick="toggleComments('${project.id}')">
               💬 ${project.comments.length}
             </button>
-            ${!isMine ? `
-              <button class="icon-btn ${hasHand ? 'active' : ''}" onclick="toggleHand('${project.id}')">
-                ${hasHand ? '✋ Hand raised' : '🤝 Raise hand'} ${project.hands.length}
-              </button>
-            ` : ''}
             ${isMine ? `
               <button class="icon-btn" onclick="openMilestoneModal('${project.id}')">+ Milestone</button>
               <button class="icon-btn" onclick="completeProject('${project.id}')">✓ Complete</button>
-            ` : ''}
+            ` : `
+              <button class="icon-btn ${hasHand ? 'active' : ''}" onclick="toggleHand('${project.id}')">
+                 ${hasHand ? '✋ Hand raised' : '🤝 Raise hand'} ${project.hands.length}
+              </button>
+          `}
           </div>
 
           <div class="comments-section" id="comments-${project.id}" style="display:none;">
