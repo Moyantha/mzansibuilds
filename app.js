@@ -128,6 +128,7 @@ function showApp() {
   document.getElementById('currentUserName').textContent = currentUser.name;
   updateStats();
   renderFeed();
+  renderMyProjects();
   renderCelebrationWall();
   renderProfile();
 }
@@ -165,16 +166,20 @@ function showView(viewName) {
   document.getElementById('view-' + viewName).style.display = 'block';
   document.getElementById('nav-' + viewName).classList.add('active');
 
-  if (viewName === 'profile') renderProfile();
-  if (viewName === 'celebration') renderCelebrationWall();
   if (viewName === 'feed') renderFeed();
+  if (viewName === 'myprojects') renderMyProjects();
+  if (viewName === 'celebration') renderCelebrationWall();
+  if (viewName === 'profile') renderProfile();
 }
 
 // STATS 
 function updateStats() {
+  const activeProjects = projects.filter(p => !p.completed);
+  const completedProjects = projects.filter(p => p.completed);
+  
   document.getElementById('statTotal').textContent = projects.length;
-  document.getElementById('statBuilders').textContent = new Set(projects.map(p => p.authorId)).size;
-  document.getElementById('statShipped').textContent = projects.filter(p => p.completed).length;
+  document.getElementById('statBuilders').textContent = new Set(activeProjects.map(p => p.authorId)).size;
+  document.getElementById('statShipped').textContent = completedProjects.length;
 }
 
 // PROJECT MODAL
@@ -576,4 +581,86 @@ function renderProfile() {
       `).join('')}
     </div>
   `;
+}
+
+// MY PROJECTS VIEW
+function renderMyProjects() {
+  const container = document.getElementById('view-myprojects');
+  const myProjects = projects.filter(p => p.authorId === currentUser.id);
+
+  const stageProgress = {
+    'Idea': 10,
+    'Planning': 25,
+    'In Progress': 55,
+    'Testing': 80,
+    'Completed': 100
+  };
+
+  let html = `
+    <div class="feed-header">
+      <h2>My Projects</h2>
+      <span class="feed-count">${myProjects.length} projects</span>
+    </div>
+  `;
+
+  if (myProjects.length === 0) {
+    html += `
+      <div class="empty-state">
+        <div class="empty-icon">◉</div>
+        <p>You haven't added any projects yet. Click + New Project to get started!</p>
+      </div>
+    `;
+  } else {
+    myProjects.forEach(project => {
+      const progress = stageProgress[project.stage] || 0;
+      html += `
+        <div class="my-proj-card">
+          <div class="my-proj-top">
+            <div>
+              <div class="card-title">${project.title}</div>
+              <div class="card-author">${formatDate(project.ts)}</div>
+            </div>
+            <span class="badge ${project.completed ? 'badge-done' : 'badge-stage'}">
+              ${project.stage}
+            </span>
+          </div>
+
+          <p class="card-desc">${project.desc}</p>
+
+          <div class="progress-bar-wrap">
+            <div class="progress-bar" style="width: ${progress}%"></div>
+          </div>
+          <div class="progress-label">
+            <span>Progress</span>
+            <span>${progress}%</span>
+          </div>
+
+          ${project.milestones.length > 0 ? `
+            <div class="milestones-list">
+              <p class="skills-label">Milestones</p>
+              ${project.milestones.map(m => `
+                <div class="milestone-item">
+                  <div class="milestone-dot"></div>
+                  <div>
+                    <div class="milestone-text">${m.text}</div>
+                    <div class="milestone-date">${m.date}</div>
+                  </div>
+                </div>
+              `).join('')}
+            </div>
+          ` : ''}
+
+          <div class="card-actions" style="margin-top: 8px;">
+            ${!project.completed ? `
+              <button class="icon-btn" onclick="openMilestoneModal('${project.id}')">+ Milestone</button>
+              <button class="icon-btn" style="border-color:var(--green);color:var(--green);" 
+                onclick="completeProject('${project.id}')">✓ Mark Complete</button>
+            ` : ''}
+          </div>
+        </div>
+      `;
+    });
+  }
+
+  container.innerHTML = html;
 }

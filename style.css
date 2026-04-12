@@ -813,3 +813,79 @@ body {
   border-radius: 20px;
   font-weight: 500;
 }
+
+/* My Projects */
+.my-proj-card {
+  background: var(--white);
+  border: 1px solid var(--gray-light);
+  border-left: 3px solid var(--green);
+  border-radius: 10px;
+  padding: 1rem;
+  margin-bottom: 0.75rem;
+}
+
+.my-proj-top {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  margin-bottom: 6px;
+}
+
+.progress-bar-wrap {
+  background: var(--gray-light);
+  border-radius: 20px;
+  height: 6px;
+  margin: 8px 0;
+}
+
+.progress-bar {
+  background: var(--green);
+  height: 6px;
+  border-radius: 20px;
+  transition: width 0.3s;
+}
+
+.progress-label {
+  display: flex;
+  justify-content: space-between;
+  font-size: 12px;
+  color: var(--gray);
+  margin-bottom: 8px;
+}
+
+.milestones-list {
+  margin-top: 8px;
+  margin-bottom: 8px;
+}
+
+.milestone-item {
+  display: flex;
+  align-items: flex-start;
+  gap: 8px;
+  padding: 6px 0;
+  border-bottom: 1px solid var(--gray-light);
+}
+
+.milestone-item:last-child {
+  border: none;
+}
+
+.milestone-dot {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: var(--green);
+  margin-top: 4px;
+  flex-shrink: 0;
+}
+
+.milestone-text {
+  font-size: 13px;
+  color: var(--black);
+}
+
+.milestone-date {
+  font-size: 11px;
+  color: var(--gray);
+  margin-top: 2px;
+}
