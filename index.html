@@ -20,7 +20,12 @@
 
   <!-- Login / Register Screen -->
   <div class="auth-wrap" id="authScreen">
-    <div class="auth-card">
+
+    <!-- LOGIN FORM -->
+    <div class="auth-card" id="loginForm">
+      <div class="auth-logo">Mzansi<span>Builds</span></div>
+      <p class="auth-tagline">Build in public. Grow together.</p>
+
       <h2>Sign in</h2>
       <p class="auth-sub">Welcome back, developer</p>
 
@@ -28,23 +33,59 @@
         <label>Email</label>
         <input type="email" id="loginEmail" placeholder="you@example.com" />
       </div>
-
       <div class="form-group">
         <label>Password</label>
         <input type="password" id="loginPassword" placeholder="••••••••" />
       </div>
 
       <p class="error-msg" id="loginError"></p>
-
       <button class="btn btn-green btn-full" onclick="login()">Sign in</button>
 
       <p class="auth-switch">
-        Don't have an account? 
+        Don't have an account?
         <button onclick="showRegister()">Create account</button>
       </p>
     </div>
-  </div>
 
+    <!-- REGISTER FORM -->
+    <div class="auth-card" id="registerForm" style="display:none;">
+      <div class="auth-logo">Mzansi<span>Builds</span></div>
+      <p class="auth-tagline">Build in public. Grow together.</p>
+
+      <h2>Create account</h2>
+      <p class="auth-sub">Join the community</p>
+
+      <div class="form-group">
+        <label>Full name</label>
+        <input type="text" id="regName" placeholder="Thabo Nkosi" />
+      </div>
+      <div class="form-group">
+        <label>Email</label>
+        <input type="email" id="regEmail" placeholder="you@example.com" />
+      </div>
+      <div class="form-group">
+        <label>Password</label>
+        <input type="password" id="regPassword" placeholder="••••••••" />
+      </div>
+      <div class="form-group">
+        <label>Short bio</label>
+        <input type="text" id="regBio" placeholder="What do you build?" />
+      </div>
+      <div class="form-group">
+        <label>Skills</label>
+        <input type="text" id="regSkills" placeholder="React, Python, Flutter" />
+      </div>
+
+      <p class="error-msg" id="registerError"></p>
+      <button class="btn btn-green btn-full" onclick="register()">Create account</button>
+
+      <p class="auth-switch">
+        Already have an account?
+        <button onclick="showLogin()">Sign in</button>
+      </p>
+    </div>
+
+  </div>
   <!-- Main app (hidden until logged in) -->
   <div id="mainApp" style="display:none;">
     <p>You are logged in!</p>
