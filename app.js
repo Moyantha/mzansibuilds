@@ -106,6 +106,7 @@ function showApp() {
   document.getElementById('authScreen').style.display = 'none';
   document.getElementById('mainApp').style.display = 'block';
   document.getElementById('currentUserName').textContent = currentUser.name;
+  updateStats();
 }
 
 function showAuth() {
@@ -128,4 +129,25 @@ if (currentUser) {
   showApp();
 } else {
   showAuth();
+}
+
+// NAVIGATION 
+function showView(viewName) {
+  // Hide all views
+  const views = ['feed', 'myprojects', 'celebration', 'profile'];
+  views.forEach(v => {
+    document.getElementById('view-' + v).style.display = 'none';
+    document.getElementById('nav-' + v).classList.remove('active');
+  });
+
+  // Show selected view
+  document.getElementById('view-' + viewName).style.display = 'block';
+  document.getElementById('nav-' + viewName).classList.add('active');
+}
+
+// STATS 
+function updateStats() {
+  document.getElementById('statTotal').textContent = projects.length;
+  document.getElementById('statBuilders').textContent = new Set(projects.map(p => p.authorId)).size;
+  document.getElementById('statShipped').textContent = projects.filter(p => p.completed).length;
 }

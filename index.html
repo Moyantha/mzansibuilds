@@ -13,8 +13,9 @@
   <nav class="navbar">
     <div class="nav-logo">Mzansi<span>Builds</span></div>
     <div class="nav-actions">
-      <button class="btn btn-green">+ New Project</button>
-      <button class="btn btn-outline">Sign out</button>
+      <span class="nav-user" id="currentUserName"></span>
+      <button class="btn btn-green btn-sm" onclick="openNewProjectModal()">+ New Project</button>
+      <button class="btn btn-outline btn-sm" onclick="logout()">Sign out</button>
     </div>
   </nav>
 
@@ -86,10 +87,77 @@
     </div>
 
   </div>
+  
   <!-- Main app (hidden until logged in) -->
-  <div id="mainApp" style="display:none;">
-    <p>You are logged in!</p>
+<div id="mainApp" style="display:none;">
+
+  <!-- 3 column layout -->
+  <div class="main-layout">
+
+    <!-- LEFT SIDEBAR -->
+    <aside class="sidebar">
+      <p class="sidebar-label">Navigation</p>
+      <ul class="sidebar-menu">
+        <li><button onclick="showView('feed')" id="nav-feed" class="active">◈ Live Feed</button></li>
+        <li><button onclick="showView('myprojects')" id="nav-myprojects">◉ My Projects</button></li>
+        <li><button onclick="showView('celebration')" id="nav-celebration">★ Celebration Wall</button></li>
+        <li><button onclick="showView('profile')" id="nav-profile">◎ My Profile</button></li>
+      </ul>
+    </aside>
+
+    <!-- MAIN CONTENT AREA -->
+    <main class="main-content">
+      <!-- Views will load here -->
+      <div id="view-feed">
+        <div class="feed-header">
+          <h2>Live Feed</h2>
+        </div>
+        <p>Projects will appear here...</p>
+      </div>
+
+      <div id="view-myprojects" style="display:none;">
+        <div class="feed-header">
+          <h2>My Projects</h2>
+        </div>
+        <p>Your projects will appear here...</p>
+      </div>
+
+      <div id="view-celebration" style="display:none;">
+        <div class="feed-header">
+          <h2>🎉 Celebration Wall</h2>
+        </div>
+        <p>Completed projects will appear here...</p>
+      </div>
+
+      <div id="view-profile" style="display:none;">
+        <div class="feed-header">
+          <h2>My Profile</h2>
+        </div>
+        <p>Profile will appear here...</p>
+      </div>
+    </main>
+
+    <!-- RIGHT PANEL -->
+    <aside class="right-panel">
+      <div class="panel-section">
+        <h3>Platform Stats</h3>
+        <div class="stat-row">
+          <span>Total projects</span>
+          <span class="stat-num" id="statTotal">0</span>
+        </div>
+        <div class="stat-row">
+          <span>Active builders</span>
+          <span class="stat-num" id="statBuilders">0</span>
+        </div>
+        <div class="stat-row">
+          <span>Shipped</span>
+          <span class="stat-num" id="statShipped">0</span>
+        </div>
+      </div>
+    </aside>
+
   </div>
+</div>
 
   <script src="app.js"></script>
 
