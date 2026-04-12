@@ -380,3 +380,46 @@ function toggleHand(projectId) {
   saveProjects();
   renderFeed();
 }
+
+// MILESTONE MODAL
+let currentMilestoneProjectId = null;
+
+function openMilestoneModal(projectId) {
+  const project = projects.find(p => p.id === projectId);
+  if (!project) return;
+
+  currentMilestoneProjectId = projectId;
+  document.getElementById('milestoneProjectName').textContent = 'Project: ' + project.title;
+  document.getElementById('milestoneText').value = '';
+  document.getElementById('milestoneError').textContent = '';
+  document.getElementById('milestoneModal').style.display = 'flex';
+}
+
+function closeMilestoneModal() {
+  document.getElementById('milestoneModal').style.display = 'none';
+  currentMilestoneProjectId = null;
+}
+
+// ADD MILESTONE
+function addMilestone() {
+  const text = document.getElementById('milestoneText').value.trim();
+  const errorMsg = document.getElementById('milestoneError');
+
+  if (!text) {
+    errorMsg.textContent = 'Please describe your milestone.';
+    return;
+  }
+
+  const project = projects.find(p => p.id === currentMilestoneProjectId);
+  if (!project) return;
+
+  project.milestones.push({
+    text: text,
+    date: new Date().toISOString().split('T')[0]
+  });
+
+  saveProjects();
+  closeMilestoneModal();
+  renderFeed();
+  showToast('Milestone added!');
+}

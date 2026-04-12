@@ -210,5 +210,30 @@
 
     </div>
   </div>
+
+  <!-- Milestone Modal -->
+  <div class="modal-overlay" id="milestoneModal" style="display:none;" onclick="closeModalOnOverlay(event)">
+    <div class="modal">
+      <div class="modal-header">
+        <h3>Add Milestone</h3>
+        <button class="modal-close" onclick="closeMilestoneModal()">×</button>
+      </div>
+
+      <p class="modal-subtitle" id="milestoneProjectName"></p>
+
+      <div class="form-group">
+        <label>What have you achieved?</label>
+        <input type="text" id="milestoneText" placeholder="e.g. Launched MVP, Integrated payments..." />
+      </div>
+
+      <p class="error-msg" id="milestoneError"></p>
+
+      <div class="modal-actions">
+        <button class="btn btn-green" onclick="addMilestone()">Add milestone</button>
+        <button class="btn btn-outline" onclick="closeMilestoneModal()">Cancel</button>
+      </div>
+    </div>
+  </div>
+  
 </body>
 </html>

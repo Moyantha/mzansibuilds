@@ -610,3 +610,9 @@ body {
   font-size: 13px;
   color: var(--gray);
 }
+
+.modal-subtitle {
+  font-size: 13px;
+  color: var(--gray);
+  margin-bottom: 1.5rem;
+}
