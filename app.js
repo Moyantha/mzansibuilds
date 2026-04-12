@@ -108,6 +108,7 @@ function showApp() {
   document.getElementById('currentUserName').textContent = currentUser.name;
   updateStats();
   renderFeed();
+  renderCelebrationWall();
 }
 
 function showAuth() {
@@ -422,4 +423,60 @@ function addMilestone() {
   closeMilestoneModal();
   renderFeed();
   showToast('Milestone added!');
+}
+
+// COMPLETE PROJECT 
+function completeProject(projectId) {
+  const project = projects.find(p => p.id === projectId);
+  if (!project) return;
+
+  const confirmed = confirm('Are you sure you want to mark "' + project.title + '" as completed? You will be added to the Celebration Wall!');
+  if (!confirmed) return;
+
+  project.completed = true;
+  project.stage = 'Completed';
+  saveProjects();
+  renderFeed();
+  renderCelebrationWall();
+  updateStats();
+  showToast('Congratulations! You have been added to the Celebration Wall!');
+}
+
+// CELEBRATION WALL 
+function renderCelebrationWall() {
+  const container = document.getElementById('view-celebration');
+  const completedProjects = projects.filter(p => p.completed);
+
+  let html = `
+    <div class="feed-header">
+      <h2>🎉 Celebration Wall</h2>
+    </div>
+    <p class="wall-subtitle">Developers who built in public and shipped!</p>
+  `;
+
+  if (completedProjects.length === 0) {
+    html += `
+      <div class="empty-state">
+        <div class="empty-icon">★</div>
+        <p>No completed projects yet. Be the first to ship!</p>
+      </div>
+    `;
+  } else {
+    html += '<div class="celebration-grid">';
+    completedProjects.forEach(project => {
+      const author = users.find(u => u.id === project.authorId) || { name: 'Unknown' };
+      const initials = author.name.split(' ').map(w => w[0]).join('').slice(0, 2).toUpperCase();
+      html += `
+        <div class="celeb-card">
+          <div class="celeb-avatar">${initials}</div>
+          <div class="celeb-name">${author.name}</div>
+          <div class="celeb-project">${project.title}</div>
+          <div class="celeb-emoji">🚀</div>
+        </div>
+      `;
+    });
+    html += '</div>';
+  }
+
+  container.innerHTML = html;
 }
