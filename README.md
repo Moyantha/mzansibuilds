@@ -56,13 +56,14 @@ open index.html
 
 ---
 
-## Project Structure
-mzansibuilds/
-├── index.html      — Main HTML structure and layout
-├── style.css       — All styling and theme variables
-├── app.js          — Application logic and functionality
-├── README.md       — Project documentation
-└── .gitignore      — Files excluded from version control
+## 📁 Project Structure
+
+    mzansibuilds/
+    ├── index.html      — App structure and layout
+    ├── style.css       — Styling and theme
+    ├── app.js          — Application logic
+    ├── README.md       — Documentation
+    └── .gitignore      — Git exclusions
 
 ---
 
