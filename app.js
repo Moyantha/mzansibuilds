@@ -107,6 +107,7 @@ function showApp() {
   document.getElementById('mainApp').style.display = 'block';
   document.getElementById('currentUserName').textContent = currentUser.name;
   updateStats();
+  renderFeed();
 }
 
 function showAuth() {
@@ -150,4 +151,232 @@ function updateStats() {
   document.getElementById('statTotal').textContent = projects.length;
   document.getElementById('statBuilders').textContent = new Set(projects.map(p => p.authorId)).size;
   document.getElementById('statShipped').textContent = projects.filter(p => p.completed).length;
+}
+
+// PROJECT MODAL
+function openNewProjectModal() {
+  document.getElementById('newProjectModal').style.display = 'flex';
+}
+
+function closeNewProjectModal() {
+  document.getElementById('newProjectModal').style.display = 'none';
+  // Clear the form
+  document.getElementById('projTitle').value = '';
+  document.getElementById('projDesc').value = '';
+  document.getElementById('projStage').value = 'Idea';
+  document.getElementById('projSupport').value = '';
+  document.getElementById('projectError').textContent = '';
+}
+
+function closeModalOnOverlay(event) {
+  if (event.target.classList.contains('modal-overlay')) {
+    closeNewProjectModal();
+  }
+}
+
+// ADD PROJECT
+function addProject() {
+  const title = document.getElementById('projTitle').value.trim();
+  const desc = document.getElementById('projDesc').value.trim();
+  const stage = document.getElementById('projStage').value;
+  const support = document.getElementById('projSupport').value;
+  const errorMsg = document.getElementById('projectError');
+
+  // Validation
+  if (!title || !desc) {
+    errorMsg.textContent = 'Please fill in the title and description.';
+    return;
+  }
+
+  // Create new project object
+  const newProject = {
+    id: generateId(),
+    authorId: currentUser.id,
+    title: title,
+    desc: desc,
+    stage: stage,
+    support: support,
+    milestones: [],
+    comments: [],
+    hands: [],
+    completed: false,
+    ts: new Date().toISOString()
+  };
+
+  // Save it
+  projects.unshift(newProject);
+  saveProjects();
+
+  // Close modal and refresh feed
+  closeNewProjectModal();
+  renderFeed();
+  updateStats();
+  showToast('Project added to the feed!');
+}
+
+// TOAST NOTIFICATION
+function showToast(message) {
+  // Remove existing toast if any
+  const existing = document.getElementById('toast');
+  if (existing) existing.remove();
+
+  const toast = document.createElement('div');
+  toast.id = 'toast';
+  toast.className = 'toast';
+  toast.textContent = message;
+  document.body.appendChild(toast);
+
+  setTimeout(() => toast.remove(), 3000);
+}
+
+// RENDER FEED 
+function renderFeed() {
+  const feedContainer = document.getElementById('view-feed');
+  const activeProjects = projects.filter(p => !p.completed);
+
+  let html = `
+    <div class="feed-header">
+      <h2>Live Feed</h2>
+      <span class="feed-count">${activeProjects.length} projects</span>
+    </div>
+  `;
+
+  if (activeProjects.length === 0) {
+    html += `
+      <div class="empty-state">
+        <div class="empty-icon">◈</div>
+        <p>No projects yet. Be the first to build in public!</p>
+      </div>
+    `;
+  } else {
+    activeProjects.forEach(project => {
+      const author = users.find(u => u.id === project.authorId) || { name: 'Unknown' };
+      const isMine = project.authorId === currentUser.id;
+      const hasHand = project.hands.includes(currentUser.id);
+      const latestMilestone = project.milestones.length > 0
+        ? project.milestones[project.milestones.length - 1]
+        : null;
+
+      html += `
+        <div class="project-card ${isMine ? 'mine' : ''}">
+          <div class="card-top">
+            <div>
+              <div class="card-title">${project.title}</div>
+              <div class="card-author">by ${author.name} · ${formatDate(project.ts)}</div>
+            </div>
+            <div class="badges">
+              <span class="badge badge-stage">${project.stage}</span>
+              ${project.support ? `<span class="badge badge-support">Needs: ${project.support}</span>` : ''}
+            </div>
+          </div>
+
+          <p class="card-desc">${project.desc}</p>
+
+          ${latestMilestone ? `
+            <div class="latest-milestone">
+              <p class="milestone-label">Latest milestone</p>
+              <p class="milestone-text">✓ ${latestMilestone.text}</p>
+            </div>
+          ` : ''}
+
+          <div class="card-actions">
+            <button class="icon-btn" onclick="toggleComments('${project.id}')">
+              💬 ${project.comments.length}
+            </button>
+            ${!isMine ? `
+              <button class="icon-btn ${hasHand ? 'active' : ''}" onclick="toggleHand('${project.id}')">
+                ${hasHand ? '✋ Hand raised' : '🤝 Raise hand'} ${project.hands.length}
+              </button>
+            ` : ''}
+            ${isMine ? `
+              <button class="icon-btn" onclick="openMilestoneModal('${project.id}')">+ Milestone</button>
+              <button class="icon-btn" onclick="completeProject('${project.id}')">✓ Complete</button>
+            ` : ''}
+          </div>
+
+          <div class="comments-section" id="comments-${project.id}" style="display:none;">
+            ${renderComments(project)}
+            <div class="comment-input-row">
+              <input type="text" id="commentInput-${project.id}" placeholder="Write a comment..." 
+                onkeydown="if(event.key==='Enter') addComment('${project.id}')" />
+              <button class="btn btn-green btn-sm" onclick="addComment('${project.id}')">Post</button>
+            </div>
+          </div>
+        </div>
+      `;
+    });
+  }
+
+  feedContainer.innerHTML = html;
+}
+
+// RENDER COMMENTS 
+function renderComments(project) {
+  if (project.comments.length === 0) return '<p style="font-size:13px;color:var(--gray);margin-bottom:8px;">No comments yet.</p>';
+
+  return project.comments.map(c => {
+    const author = users.find(u => u.id === c.userId) || { name: 'Unknown' };
+    const initials = author.name.split(' ').map(w => w[0]).join('').slice(0, 2).toUpperCase();
+    return `
+      <div class="comment">
+        <div class="avatar">${initials}</div>
+        <div class="comment-body">
+          <div class="comment-author">${author.name}</div>
+          <div class="comment-text">${c.text}</div>
+        </div>
+      </div>
+    `;
+  }).join('');
+}
+
+// FORMAT DATE 
+function formatDate(ts) {
+  return new Date(ts).toLocaleDateString('en-ZA', {
+    day: 'numeric', month: 'short', year: 'numeric'
+  });
+}
+
+// TOGGLE COMMENTS 
+function toggleComments(projectId) {
+  const section = document.getElementById('comments-' + projectId);
+  section.style.display = section.style.display === 'none' ? 'block' : 'none';
+}
+
+// ADD COMMENT 
+function addComment(projectId) {
+  const input = document.getElementById('commentInput-' + projectId);
+  const text = input.value.trim();
+  if (!text) return;
+
+  const project = projects.find(p => p.id === projectId);
+  if (!project) return;
+
+  project.comments.push({
+    userId: currentUser.id,
+    text: text,
+    ts: new Date().toISOString()
+  });
+
+  saveProjects();
+  input.value = '';
+  renderFeed();
+  toggleComments(projectId);
+}
+
+// RAISE HAND 
+function toggleHand(projectId) {
+  const project = projects.find(p => p.id === projectId);
+  if (!project) return;
+
+  const hasHand = project.hands.includes(currentUser.id);
+  if (hasHand) {
+    project.hands = project.hands.filter(h => h !== currentUser.id);
+    showToast('Removed collaboration request');
+  } else {
+    project.hands.push(currentUser.id);
+    showToast('Raised your hand for collaboration!');
+  }
+
+  saveProjects();
+  renderFeed();
 }

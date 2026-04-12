@@ -161,5 +161,54 @@
 
   <script src="app.js"></script>
 
+  <!-- New Project Modal -->
+  <div class="modal-overlay" id="newProjectModal" style="display:none;" onclick="closeModalOnOverlay(event)">
+    <div class="modal">
+      <div class="modal-header">
+        <h3>New Project</h3>
+        <button class="modal-close" onclick="closeNewProjectModal()">×</button>
+      </div>
+
+      <div class="form-group">
+        <label>Project title</label>
+        <input type="text" id="projTitle" placeholder="What are you building?" />
+      </div>
+
+      <div class="form-group">
+        <label>Description</label>
+        <textarea id="projDesc" placeholder="Describe your project and what problem it solves..."></textarea>
+      </div>
+
+      <div class="form-group">
+        <label>Current stage</label>
+        <select id="projStage">
+          <option value="Idea">Idea</option>
+          <option value="Planning">Planning</option>
+          <option value="In Progress">In Progress</option>
+          <option value="Testing">Testing</option>
+        </select>
+      </div>
+
+      <div class="form-group">
+        <label>Support needed</label>
+        <select id="projSupport">
+          <option value="">None right now</option>
+          <option value="Feedback">Feedback</option>
+          <option value="Collaboration">Collaboration</option>
+          <option value="Mentorship">Mentorship</option>
+          <option value="Investment">Investment</option>
+          <option value="Testing">Testing</option>
+        </select>
+      </div>
+
+      <p class="error-msg" id="projectError"></p>
+
+      <div class="modal-actions">
+        <button class="btn btn-green" onclick="addProject()">Add to feed</button>
+        <button class="btn btn-outline" onclick="closeNewProjectModal()">Cancel</button>
+      </div>
+
+    </div>
+  </div>
 </body>
 </html>
