@@ -109,6 +109,7 @@ function showApp() {
   updateStats();
   renderFeed();
   renderCelebrationWall();
+  renderProfile();
 }
 
 function showAuth() {
@@ -135,16 +136,18 @@ if (currentUser) {
 
 // NAVIGATION 
 function showView(viewName) {
-  // Hide all views
   const views = ['feed', 'myprojects', 'celebration', 'profile'];
   views.forEach(v => {
     document.getElementById('view-' + v).style.display = 'none';
     document.getElementById('nav-' + v).classList.remove('active');
   });
 
-  // Show selected view
   document.getElementById('view-' + viewName).style.display = 'block';
   document.getElementById('nav-' + viewName).classList.add('active');
+
+  if (viewName === 'profile') renderProfile();
+  if (viewName === 'celebration') renderCelebrationWall();
+  if (viewName === 'feed') renderFeed();
 }
 
 // STATS 
@@ -479,4 +482,67 @@ function renderCelebrationWall() {
   }
 
   container.innerHTML = html;
+}
+
+// PROFILE VIEW 
+function renderProfile() {
+  const container = document.getElementById('view-profile');
+  const myProjects = projects.filter(p => p.authorId === currentUser.id);
+  const completed = myProjects.filter(p => p.completed).length;
+  const inProgress = myProjects.filter(p => !p.completed).length;
+  const totalMilestones = myProjects.reduce((a, p) => a + p.milestones.length, 0);
+  const initials = currentUser.name.split(' ').map(w => w[0]).join('').slice(0, 2).toUpperCase();
+
+  container.innerHTML = `
+    <div class="feed-header">
+      <h2>My Profile</h2>
+    </div>
+
+    <div class="profile-header">
+      <div class="profile-avatar">${initials}</div>
+      <div class="profile-name">${currentUser.name}</div>
+      <div class="profile-bio">${currentUser.bio || 'No bio yet'}</div>
+    </div>
+
+    <div class="profile-stats">
+      <div class="profile-stat">
+        <div class="profile-stat-num">${myProjects.length}</div>
+        <div class="profile-stat-label">Total Projects</div>
+      </div>
+      <div class="profile-stat">
+        <div class="profile-stat-num">${completed}</div>
+        <div class="profile-stat-label">Completed</div>
+      </div>
+      <div class="profile-stat">
+        <div class="profile-stat-num">${inProgress}</div>
+        <div class="profile-stat-label">In Progress</div>
+      </div>
+      <div class="profile-stat">
+        <div class="profile-stat-num">${totalMilestones}</div>
+        <div class="profile-stat-label">Milestones</div>
+      </div>
+    </div>
+
+    ${currentUser.skills ? `
+      <div class="profile-skills">
+        <p class="skills-label">Skills</p>
+        <div class="skills-list">
+          ${currentUser.skills.split(',').map(s => `
+            <span class="badge badge-stage">${s.trim()}</span>
+          `).join('')}
+        </div>
+      </div>
+    ` : ''}
+
+    <div class="profile-projects">
+      <p class="skills-label">My Projects</p>
+      ${myProjects.length === 0 ? '<p style="font-size:13px;color:var(--gray)">No projects yet.</p>' : ''}
+      ${myProjects.map(p => `
+        <div class="profile-project-item">
+          <div class="profile-project-title">${p.title}</div>
+          <span class="badge ${p.completed ? 'badge-done' : 'badge-stage'}">${p.stage}</span>
+        </div>
+      `).join('')}
+    </div>
+  `;
 }

@@ -668,3 +668,116 @@ body {
 .celeb-emoji {
   font-size: 20px;
 }
+
+/* Profile */
+.profile-header {
+  text-align: center;
+  padding: 1.5rem;
+  background: var(--black);
+  border-radius: 12px;
+  color: var(--white);
+  margin-bottom: 1.5rem;
+}
+
+.profile-avatar {
+  width: 72px;
+  height: 72px;
+  border-radius: 50%;
+  background: var(--green);
+  color: var(--white);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 28px;
+  font-weight: 800;
+  margin: 0 auto 8px;
+}
+
+.profile-name {
+  font-size: 1.1rem;
+  font-weight: 800;
+  margin-bottom: 4px;
+}
+
+.profile-bio {
+  font-size: 13px;
+  color: #aaa;
+}
+
+.profile-stats {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 12px;
+  margin-bottom: 1.5rem;
+}
+
+.profile-stat {
+  background: var(--white);
+  border: 1px solid var(--gray-light);
+  border-radius: 8px;
+  padding: 12px;
+  text-align: center;
+}
+
+.profile-stat-num {
+  font-size: 1.5rem;
+  font-weight: 800;
+  color: var(--green);
+}
+
+.profile-stat-label {
+  font-size: 12px;
+  color: var(--gray);
+  margin-top: 2px;
+}
+
+.profile-skills {
+  background: var(--white);
+  border: 1px solid var(--gray-light);
+  border-radius: 10px;
+  padding: 1rem;
+  margin-bottom: 1.5rem;
+}
+
+.skills-label {
+  font-size: 11px;
+  color: var(--gray);
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  margin-bottom: 8px;
+}
+
+.skills-list {
+  display: flex;
+  gap: 6px;
+  flex-wrap: wrap;
+}
+
+.profile-projects {
+  background: var(--white);
+  border: 1px solid var(--gray-light);
+  border-radius: 10px;
+  padding: 1rem;
+}
+
+.profile-project-item {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 8px 0;
+  border-bottom: 1px solid var(--gray-light);
+  font-size: 13px;
+}
+
+.profile-project-item:last-child {
+  border: none;
+}
+
+.profile-project-title {
+  font-weight: 500;
+}
+
+.badge-done {
+  background: #d1fae5;
+  color: #065f46;
+}
